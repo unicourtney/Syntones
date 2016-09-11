@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.syntones.model.User;
 import com.syntones.remote.SyntonesWebAPI;
@@ -63,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 editorUserInfo.putString("username", username);
                 editorUserInfo.commit();
-
 
                 Intent intent = new Intent(LoginActivity.this, YourLibraryActivity.class);
                 startActivity(intent);

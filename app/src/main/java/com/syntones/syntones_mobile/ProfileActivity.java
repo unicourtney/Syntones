@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -16,13 +17,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+
+        ProfUsernameTv = (TextView)findViewById(R.id.tvProfUsername);
         SharedPreferences sharedPrefUserInfo = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
         String username = sharedPrefUserInfo.getString("username", "");
         ProfUsernameTv.setText(username);
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
     }
 
     public void viewAllPlaylists(View view) {
