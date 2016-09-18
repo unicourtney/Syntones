@@ -29,7 +29,8 @@
         android:src="@drawable/ic_search_black_24dp"
         android:layout_alignBottom="@+id/etSearch"
         android:layout_alignRight="@+id/relativeLayout2"
-        android:layout_alignEnd="@+id/relativeLayout2" />
+        android:layout_alignEnd="@+id/relativeLayout2"
+        android:onClick="searchBtn" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -39,7 +40,8 @@
         android:layout_above="@+id/relativeLayout2"
         android:background="#FFFFFF"
         android:layout_below="@+id/etSearch"
-        android:headerDividersEnabled="false" />
+        android:headerDividersEnabled="false"
+        android:choiceMode="singleChoice" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -80,12 +82,13 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="120dp"
             android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:onClick="bottomBar"
             android:text="Your Library"
             android:background="#434343"
-            android:textColor="#D9D9D9" />
+            android:textColor="#D9D9D9"
+            android:layout_alignTop="@+id/btnSearch"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
 </RelativeLayout>

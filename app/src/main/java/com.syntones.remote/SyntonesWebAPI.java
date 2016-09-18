@@ -6,7 +6,14 @@ package com.syntones.remote;
 
 import android.content.Context;
 
+import com.syntones.model.Playlist;
+import com.syntones.model.Song;
 import com.syntones.model.User;
+import com.syntones.response.LoginResponse;
+import com.syntones.response.PlaylistResponse;
+import com.syntones.response.SongListResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -17,6 +24,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface SyntonesWebAPI {
 
@@ -26,7 +34,13 @@ public interface SyntonesWebAPI {
     Call<User> createUser(@Body User user);
 
     @POST("login")
-    Call<User> logInUser(@Body User user);
+    Call<LoginResponse> logInUser(@Body User user);
+
+    @POST("savePlaylist")
+    Call<PlaylistResponse> createPlaylist(@Body Playlist playlist);
+
+    @GET("songList")
+    Call<SongListResponse> getAllSongsFromDB();
 
 
     class Factory {

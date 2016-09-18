@@ -26,7 +26,7 @@ import com.syntones.remote.SyntonesWebAPI;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -45,7 +45,7 @@ public class SignupActivity extends AppCompatActivity {
 
     TextView UsernameTv;
 
-    @Bind(R.id.btnSignUp)
+    @BindView(R.id.btnSignUp)
     Button btn_signUp;
 
 
@@ -88,9 +88,9 @@ public class SignupActivity extends AppCompatActivity {
         SyntonesWebAPI syntonesWebAPI = SyntonesWebAPI.Factory.getInstance(sContext);
 
         User user = new User();
-        String s = new String(Hex.encodeHex(DigestUtils.md5(password)));
+        String encrypted_password = new String(Hex.encodeHex(DigestUtils.md5(password)));
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(encrypted_password);
         user.setDateOfBirth(dateOfBirth);
         user.setEmail(email);
         user.setGender(gender);

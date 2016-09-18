@@ -11,13 +11,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.syntones.model.Playlist;
 import com.syntones.model.User;
 import com.syntones.remote.SyntonesWebAPI;
+import com.syntones.response.LoginResponse;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import butterknife.Bind;
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +31,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginActivity lContext;
     EditText UsernameEt, PasswordEt;
-    @Bind(R.id.btnLogIn)
+    @BindView(R.id.btnLogIn)
+    Button login;
     Button btn_signUp;
 
     @Override
@@ -54,24 +59,30 @@ public class LoginActivity extends AppCompatActivity {
 
         syntonesWebAPI.logInUser(user);
 
-        SyntonesWebAPI.Factory.getInstance(lContext).createUser(user).enqueue(new Callback<User>() {
+        SyntonesWebAPI.Factory.getInstance(lContext).logInUser(user).enqueue(new Callback<LoginResponse>() {
 
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
                 SharedPreferences sharedPrefUserInfo = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editorUserInfo = sharedPrefUserInfo.edit();
+
+                LoginResponse loginResponse = response.body();
+                List<Playlist> playlist = loginResponse.getRecentlyPlayedPlaylists();
 
                 editorUserInfo.putString("username", username);
                 editorUserInfo.commit();
 
                 Intent intent = new Intent(LoginActivity.this, YourLibraryActivity.class);
                 startActivity(intent);
+
+                Log.e("Login Response: ", String.valueOf(loginResponse.getMessage().getFlag()));
+
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e("Failed", t.getMessage());
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+
             }
         });
 
