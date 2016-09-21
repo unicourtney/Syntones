@@ -213,16 +213,9 @@ public class SongInfoActivity extends AppCompatActivity {
         SongTitleTv.setText(songs_titles[counter]);
         ArtistNameTv.setText(songs_artists[counter]);
 
-<<<<<<< Updated upstream
-        Toast.makeText(getBaseContext(), String.valueOf(count) + " - " + String.valueOf(currentDateTimeString), Toast.LENGTH_SHORT).show();
-=======
-        SharedPreferences sharedPrefUserSession = getSharedPreferences("userSession", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editorUserSession = sharedPrefUserSession.edit();
-        long count = sharedPrefUserSession.getLong("sessionUser", 0);
-        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
 
         Log.d("Played Song", String.valueOf(count) + " - " + String.valueOf(songs_urls[counter]) + " - " + currentDateTimeString);
->>>>>>> Stashed changes
+
 
 //            mediaPlayer.setDataSource(songs_urls[counter]);
 //
