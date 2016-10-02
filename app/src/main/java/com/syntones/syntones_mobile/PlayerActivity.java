@@ -1,10 +1,15 @@
 package com.syntones.syntones_mobile;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,9 +19,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -27,11 +35,14 @@ import android.widget.Toast;
 import android.view.ViewGroup.LayoutParams;
 
 import com.syntones.model.Playlist;
+import com.syntones.model.SavedOfflineSongs;
 import com.syntones.model.Song;
 import com.syntones.model.TemporaryDB;
 import com.syntones.model.ThreeItemSet;
 import com.syntones.model.TwoItemSet;
 import com.syntones.model.User;
+import com.syntones.remote.DBHelper;
+import com.syntones.remote.IpAddressSetting;
 import com.syntones.remote.SyntonesWebAPI;
 import com.syntones.response.ListenResponse;
 import com.syntones.response.SongListResponse;
@@ -58,7 +69,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     private RelativeLayout LyricsRl;
     private MediaPlayer mediaPlayer;
     private ListView BasketRecomLv;
-    private Switch SaveOfflineS;
+    private Switch SaveOfflineSw;
     private String song1, song2, username;
     private Button PreviousBtn, PlayBtn, PauseBtn, NextBtn, ShowLyricsBtn, AddtoPlaylistBtn;
     private TextView SongStartTv, SongEndTv, SongTitleTv, ArtistNameTv, BackToSongListTv;
@@ -71,7 +82,8 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     private int position, startTime, endTime, count = 0;
     private long playlist_id;
     private static int THRESHOLD = 50;
-    private static String IPADDRESS = "http://172.20.10.4";
+    private static IpAddressSetting iPAddressSetting = new IpAddressSetting();
+    private static String IPADDRESS = "http://" + iPAddressSetting.getiPAddress();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +111,9 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         //ListViews
         BasketRecomLv = (ListView) findViewById(R.id.lvBasketRecom);
 
+        //Switch
+        SaveOfflineSw = (Switch) findViewById(R.id.swSaveOffline);
+
 
         SharedPreferences sharedPrefUserInfo = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         username = sharedPrefUserInfo.getString("username", "");
@@ -117,6 +132,16 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 /*        SharedPreferences.Editor editorPlaylistInfo = sharedPrefPlaylistInfo.edit();
         editorPlaylistInfo.clear();
         editorPlaylistInfo.apply();*/
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        if ((wifiInfo != null && wifiInfo.isConnected()) || (mobileInfo != null && mobileInfo.isConnected())) {
+            Log.d("CONNECTION PLAYER", "TRUE");
+        } else {
+            Log.d("CONNECTION PLAYER", "FALSE");
+        }
 
 
         SharedPreferences sharedPrefPlayedSongInfo = getSharedPreferences("playedSongInfo", 0);
@@ -267,6 +292,40 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 backToPlaylist();
             }
         });
+
+        SaveOfflineSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (SaveOfflineSw.isChecked()) {
+
+                    saveSongsOffline(username, songs_ids, songs_urls, songs_titles, songs_artists, songs_lyrics);
+                }
+            }
+        });
+    }
+
+    public void saveSongsOffline(final String username, final String[] songs_ids, final String[] songs_urls, final String[] songs_titles, final String[] songs_artists, final String[] songs_lyrics) {
+        DBHelper db = new DBHelper(PlayerActivity.this);
+        SavedOfflineSongs savedOfflineSongs = new SavedOfflineSongs();
+
+        savedOfflineSongs.setUserName(username);
+        savedOfflineSongs.setSongId(songs_ids[counter]);
+        savedOfflineSongs.setArtistName(songs_artists[counter]);
+        savedOfflineSongs.setSongTitle(songs_titles[counter]);
+        savedOfflineSongs.setLyrics(songs_lyrics[counter]);
+        savedOfflineSongs.setFilePath(IPADDRESS+songs_urls[counter]);
+
+        db.insertSavedSong(savedOfflineSongs);
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(IPADDRESS+songs_urls[counter]));
+        String fileName = URLUtil.guessFileName(songs_urls[counter], null, MimeTypeMap.getFileExtensionFromUrl(songs_urls[counter]));
+        request.setTitle(fileName);
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        DownloadManager downloadManager = (DownloadManager) PlayerActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
+        downloadManager.enqueue(request);
     }
 
 

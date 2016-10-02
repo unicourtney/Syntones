@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".YourLibraryActivity">
+    tools:context=".YourLibraryActivity"
+    android:background="#FFFFFF">
 
 
     <ListView
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Playlists"
-        android:id="@+id/textView6"
+        android:id="@+id/textView10"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -42,6 +42,47 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="19dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saved Songs Offline"
+        android:id="@+id/textView6"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        android:layout_marginTop="21dp"
+        android:layout_below="@+id/tvViewPlaylists"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=">"
+        android:id="@+id/tvViewPlaylists"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:onClick="viewPlayLists"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=">"
+        android:id="@+id/tvViewSavedSongsOffline"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:onClick="viewSavedSongsOffline"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="45dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -92,19 +133,5 @@
             android:clickable="false" />
 
     </RelativeLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=">"
-        android:id="@+id/tvViewPlaylists"
-        android:textColor="#000000"
-        android:textSize="20dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp"
-        android:onClick="viewPlayLists"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

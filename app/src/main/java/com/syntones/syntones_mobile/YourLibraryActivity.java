@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,8 @@ public class YourLibraryActivity extends AppCompatActivity {
 
 
     private ListView RecentlyPlayedLv;
+    private TextView ViewPlaylistsTv, ViewSavedSongsOfflineTv;
+    private Button HomeBtn, SearchBtn, YourLibraryBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,28 @@ public class YourLibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_your_library);
 
+        ViewPlaylistsTv = (TextView) findViewById(R.id.tvViewPlaylists);
+        ViewSavedSongsOfflineTv = (TextView) findViewById(R.id.tvViewSavedSongsOffline);
+
+        HomeBtn = (Button) findViewById(R.id.btnHome);
+        SearchBtn = (Button) findViewById(R.id.btnSearch);
+        YourLibraryBtn = (Button) findViewById(R.id.btnSearch);
+
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        if ((wifiInfo != null && wifiInfo.isConnected()) || (mobileInfo != null && mobileInfo.isConnected())) {
+            Log.d("CONNECTION YL", "TRUE");
+
+        } else {
+            Log.d("CONNECTION YL", "FALSE");
+            HomeBtn.setClickable(false);
+            SearchBtn.setClickable(false);
+
+
+        }
         RecentlyPlayedLv = (ListView) findViewById(R.id.lvRecentlyPlayed);
 
 //        ArrayAdapter<Product> arrayAdapter = new ArrayAdapter<Product>(this, android.R.layout.simple_list_item_1, items);
@@ -97,6 +123,12 @@ public class YourLibraryActivity extends AppCompatActivity {
         Intent intent = new Intent(this, PlayListActivity.class);
         startActivity(intent);
 
+    }
+
+    public void viewSavedSongsOffline(View view) {
+
+        Intent intent = new Intent(this, SavedSongsOfflineActivity.class);
+        startActivity(intent);
     }
 
 
