@@ -3,6 +3,7 @@ package com.syntones.syntones_mobile;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -32,9 +33,10 @@ import java.net.URL;
 public class DemoDownload extends AppCompatActivity {
 
     private Switch DownloadSw;
-    private Button GetFileBtn;
+    private Button GetFileBtn, PlayOfflineBtn;
     private IpAddressSetting iPAddressSetting = new IpAddressSetting();
     private String song = "http://" + iPAddressSetting.getiPAddress() + "/songUploaded/51552-643504.mp3";
+    private MediaPlayer mediaPlayer;
 
     public DemoDownload() throws SocketException {
     }
@@ -46,7 +48,8 @@ public class DemoDownload extends AppCompatActivity {
 
         DownloadSw = (Switch) findViewById(R.id.swDownload);
         GetFileBtn = (Button) findViewById(R.id.btnGetFile);
-
+        PlayOfflineBtn = (Button) findViewById(R.id.btnPlayOffline);
+        mediaPlayer = new MediaPlayer();
         DownloadSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -79,6 +82,25 @@ public class DemoDownload extends AppCompatActivity {
 
             }
         });
+
+        PlayOfflineBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    playOffline();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+    public void playOffline() throws IOException {
+
+        mediaPlayer.setDataSource("/storage/sdcard/Download/51651-506351.mp3");
+        mediaPlayer.prepare();
+        mediaPlayer.start();
+
 
     }
 

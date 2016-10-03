@@ -18,7 +18,7 @@ import static android.content.Context.WIFI_SERVICE;
 
 public class IpAddressSetting {
 
-    String iPAddress = "192.168.1.5";
+    String iPAddress = "10.0.2.2";
 
     public IpAddressSetting() {
     }

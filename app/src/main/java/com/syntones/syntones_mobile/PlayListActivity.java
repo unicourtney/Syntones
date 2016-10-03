@@ -428,26 +428,4 @@ public class PlayListActivity extends AppCompatActivity {
         }
     }
 
-
-    public void bottomBar(View view) {
-        String btnText;
-
-        btnText = ((Button) view).getText().toString();
-
-        if (btnText.equals("Home")) {
-
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-
-        } else if (btnText.equals("Search")) {
-
-            Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
-        } else if (btnText.equals("Your Library")) {
-
-            Intent intent = new Intent(this, YourLibraryActivity.class);
-            startActivity(intent);
-        }
-
-    }
 }
