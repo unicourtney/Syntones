@@ -1258,8 +1258,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                             }
                         }
                         editorPlayedSongInfo.apply();
-                        myHandler.removeCallbacks(UpdateSongTime);
-                        mediaPlayer.stop();
+
                         SharedPreferences sharedPrefActivityInfo = getSharedPreferences("activityInfo", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editorActivityInfo = sharedPrefActivityInfo.edit();
                         editorActivityInfo.putString("activityState", "SearchActivity");
