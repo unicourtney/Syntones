@@ -53,7 +53,7 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
         SavedSongsOfflineLv = (ListView) findViewById(R.id.lvSavedSongsOffline);
         BackToLibIv = (ImageView) findViewById(R.id.ivBackToLib);
 
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, saved_offline_songs_list);
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, saved_offline_songs_list);
         SavedSongsOfflineLv.setAdapter(arrayAdapter);
         try {
             deleteFiles();

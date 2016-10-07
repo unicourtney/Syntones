@@ -58,7 +58,7 @@ public class GenerateBySongsActivity extends AppCompatActivity {
             Log.d("ARTIST NAME", artistName);
             insertGeneratedSongsByArtist(artistName);
 
-            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, songs_by_artist_list);
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs_by_artist_list);
             GeneratedSongsByLv.setAdapter(arrayAdapter);
 
         } else if (generateBy.equals("Tags")) {
@@ -66,7 +66,7 @@ public class GenerateBySongsActivity extends AppCompatActivity {
             tag = extras.get("tagInfo").toString();
             insertGeneratedSongsByTags(tag);
 
-            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, songs_by_tag_list);
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs_by_tag_list);
             GeneratedSongsByLv.setAdapter(arrayAdapter);
 
         }

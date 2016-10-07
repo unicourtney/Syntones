@@ -64,11 +64,14 @@ public class ViewPlayListActivity extends AppCompatActivity {
 
 
         SharedPreferences sharedPrefEditSong = getSharedPreferences("editInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editorEditSong = sharedPrefEditSong.edit();
         boolean editStatus = sharedPrefEditSong.getBoolean("editStatus", false);
 
         if(editStatus==true){
             EditSongBtn.setText("Edit");
             editSong();
+            editorEditSong.clear();
+            editorEditSong.apply();
         }
 
         SharedPreferences sharedPrefPlaylistInfo = getSharedPreferences("playlistInfo", Context.MODE_PRIVATE);
@@ -76,7 +79,7 @@ public class ViewPlayListActivity extends AppCompatActivity {
 
         PlaylistNameTv.setText(playlist_name);
 
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, songs);
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs);
         ViewPlaylistLv.setAdapter(arrayAdapter);
 
 
@@ -120,11 +123,15 @@ public class ViewPlayListActivity extends AppCompatActivity {
     public void editSong() {
 
         if (EditSongBtn.getText().equals("Edit")) {
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, songs);
+            ViewPlaylistLv.setAdapter(arrayAdapter);
             displaySongList();
             EditSongBtn.setText("Done");
             RemoveSongBtn.setVisibility(View.VISIBLE);
             AddSongBtn.setVisibility(View.VISIBLE);
         } else if (EditSongBtn.getText().equals("Done")) {
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs);
+            ViewPlaylistLv.setAdapter(arrayAdapter);
             displayViewSongList();
             EditSongBtn.setText("Edit");
             RemoveSongBtn.setVisibility(View.INVISIBLE);

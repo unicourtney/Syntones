@@ -219,7 +219,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         SongTitleTv.setText(songs_titles[counter]);
         ArtistNameTv.setText(songs_artists[counter]);
 
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, songs);
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs);
 
         BasketRecomLv.setAdapter(arrayAdapter);
 

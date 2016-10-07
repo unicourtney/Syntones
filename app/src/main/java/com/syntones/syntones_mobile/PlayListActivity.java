@@ -53,7 +53,7 @@ public class PlayListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play_list);
 
         PlaylistsLv = (ListView) findViewById(R.id.lvPlaylists);
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, play_lists);
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, play_lists);
         PlaylistsLv.setAdapter(arrayAdapter);
         RemoveBtn = (Button) findViewById(R.id.btnRemove);
         EditBtn = (Button) findViewById(R.id.btnEdit);
@@ -285,12 +285,16 @@ public class PlayListActivity extends AppCompatActivity {
         removeBtn = (Button) findViewById(R.id.btnRemove);
 
         if (btnText.equals("Edit")) {
+
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, play_lists);
+            PlaylistsLv.setAdapter(arrayAdapter);
             editBtn.setText("Done");
             this.displayPlaylist();
             addBtn.setVisibility(View.VISIBLE);
             removeBtn.setVisibility(View.VISIBLE);
         } else if (btnText.equals("Done")) {
-
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, play_lists);
+            PlaylistsLv.setAdapter(arrayAdapter);
             this.displayViewPlaylistList();
             editBtn.setText("Edit");
             addBtn.setVisibility(View.INVISIBLE);

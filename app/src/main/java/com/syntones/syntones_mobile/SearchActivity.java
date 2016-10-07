@@ -53,7 +53,7 @@ public class SearchActivity extends AppCompatActivity {
 
         final String searchText = SearchEt.getText().toString();
 
-        arrayAdapater = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, songs);
+        arrayAdapater = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs);
         SearchResultLv.setAdapter(arrayAdapater);
 
         displayAllSongs();
