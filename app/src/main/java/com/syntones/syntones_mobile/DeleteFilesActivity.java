@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import java.io.File;
 
+import okhttp3.Cache;
+
 public class DeleteFilesActivity extends AppCompatActivity {
     private Button DeleteBtn;
 
@@ -22,27 +24,25 @@ public class DeleteFilesActivity extends AppCompatActivity {
         DeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                File downloadDir = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
+//                File cacheDir = getExternalCacheDir();
+                File cacheDir = getExternalCacheDir();
+                File downloadDir = new File("/storage");
 
                 File listAllFiles[] = downloadDir.listFiles();
 
                 if (listAllFiles != null && listAllFiles.length > 0) {
                     for (File currentFile : listAllFiles) {
                         if (currentFile.isDirectory()) {
-/*
-                            if (currentFile.getName().equals(fileName)) {
+
                                 Log.d("DIR", currentFile.toString());
-                            }
-*/
+
 
                         } else {
                             if (currentFile.getName().endsWith("")) {
+                                Log.d("FILE", currentFile.toString());
+/*                                File file = new File(currentFile.getAbsolutePath());
 
-                                File file = new File(currentFile.getAbsolutePath());
-
-                                    file.delete();
+                                file.delete();*/
                             }
                         }
                     }

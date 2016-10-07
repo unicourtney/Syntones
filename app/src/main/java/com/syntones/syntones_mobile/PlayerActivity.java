@@ -53,6 +53,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -192,7 +193,8 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
 
         }
-
+        final SharedPreferences sharedControllerPref = getSharedPreferences("playerControls", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editorControllerPref = sharedControllerPref.edit();
         if (mediaPlayer != null) {
             Log.d("PLAYING", "TRUE");
             isPlaying = true;
@@ -202,10 +204,16 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mediaPlayer.release();
             mediaPlayer = new MediaPlayer();
             try {
-                play(size, songs_ids, songs_urls, songs_titles, songs_artists, playlist_id);
+                editorControllerPref.putString("isPaused", "notPaused");
+                editorControllerPref.apply();
+                if ((wifiInfo != null && wifiInfo.isConnected()) || (mobileInfo != null && mobileInfo.isConnected())) {
+                    Log.d("PLAY OFFLINE", "FALSE");
+                    previous(size, songs_ids, songs_urls, songs_titles, songs_artists, playlist_id);
+                } else {
+                    Log.d("PLAY OFFLINE", "TRUE");
+                    previousOffline(size, songs_ids, songs_urls, songs_titles, songs_artists, userID);
+                }
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
                 e.printStackTrace();
             }
 
@@ -243,8 +251,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             }
         });
 
-        final SharedPreferences sharedControllerPref = getSharedPreferences("playerControls", Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editorControllerPref = sharedControllerPref.edit();
+
 
         editorControllerPref.clear();
         editorControllerPref.apply();
@@ -383,10 +390,12 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(IPADDRESS + songs_urls[counter]));
         String fileName = URLUtil.guessFileName(songs_urls[counter], null, MimeTypeMap.getFileExtensionFromUrl(songs_urls[counter]));
         request.setTitle(fileName);
+        request.setVisibleInDownloadsUi(false);
         request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        File cacheDir = getCacheDir();
-        request.setDestinationInExternalPublicDir(cacheDir.getAbsolutePath(), userID + "-" + fileName);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+        File file = getFilesDir();
+        Log.d("FILE DIR", String.valueOf(file));
+        request.setDestinationInExternalPublicDir(file.getAbsolutePath(), userID + "-" + fileName);
         DownloadManager downloadManager = (DownloadManager) PlayerActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
         downloadManager.enqueue(request);
 
@@ -432,9 +441,11 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 counter = 0;
             }
 
-            File cacheDir = getCacheDir();
+            File extStore = Environment.getExternalStorageDirectory();
+            Log.d("SD CARD", String.valueOf(extStore));
+            File file = getFilesDir();
             String fileName = URLUtil.guessFileName(songs_urls[counter], null, MimeTypeMap.getFileExtensionFromUrl(songs_urls[counter]));
-            File downloadDir = new File(cacheDir, userID + "-" + fileName);
+            File downloadDir = new File(file, userID + "-" + fileName);
             Log.d("FILE", downloadDir.getName());
             Log.d("NAME", fileName);
 
@@ -442,7 +453,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 Log.d("FILE", downloadDir.toString());
 
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource("/storage/sdcard/" + downloadDir.toString());
+                mediaPlayer.setDataSource(extStore + downloadDir.toString());
                 mediaPlayer.prepare();
                 mediaPlayer.start();
             }
@@ -504,14 +515,17 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
             mediaPlayer.start();
         } else {
-            File cacheDir = getCacheDir();
+            File extStore = Environment.getExternalStorageDirectory();
+            Log.d("SD CARD", String.valueOf(extStore));
+            File file = getFilesDir();
             String fileName = URLUtil.guessFileName(songs_urls[counter], null, MimeTypeMap.getFileExtensionFromUrl(songs_urls[counter]));
-            File downloadDir = new File(cacheDir, userID + "-" + fileName);
+            File downloadDir = new File(file, userID + "-" + fileName);
             Log.d("FILE", downloadDir.getName());
             Log.d("NAME", fileName);
+
             if (downloadDir.getName().equals(userID + "-" + fileName)) {
                 Log.d("FILE", downloadDir.toString());
-                mediaPlayer.setDataSource("/storage/sdcard/" + downloadDir.toString());
+                mediaPlayer.setDataSource(extStore+downloadDir.toString());
                 mediaPlayer.prepare();
                 mediaPlayer.start();
             }
@@ -549,7 +563,8 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             }
         });
 
-
+        PlayBtn.setEnabled(false);
+        PauseBtn.setEnabled(true);
     }
 
     public void nextOffline(final int size, final String[] songs_ids, final String[] songs_urls, final String[] songs_titles, final String[] songs_artists, final String userID) throws IOException {
@@ -564,15 +579,17 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             }
 
 
-            File cacheDir = getCacheDir();
+            File extStore = Environment.getExternalStorageDirectory();
+            Log.d("SD CARD", String.valueOf(extStore));
+            File file = getFilesDir();
             String fileName = URLUtil.guessFileName(songs_urls[counter], null, MimeTypeMap.getFileExtensionFromUrl(songs_urls[counter]));
-            File downloadDir = new File(cacheDir, userID + "-" + fileName);
+            File downloadDir = new File(file, userID + "-" + fileName);
             Log.d("FILE", downloadDir.getName());
             Log.d("NAME", fileName);
             if (downloadDir.getName().equals(userID + "-" + fileName)) {
                 Log.d("FILE", downloadDir.toString());
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource("/storage/sdcard/" + downloadDir.toString());
+                mediaPlayer.setDataSource(extStore+downloadDir.toString());
                 mediaPlayer.prepare();
                 mediaPlayer.start();
                 endTime = mediaPlayer.getDuration();

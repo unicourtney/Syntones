@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -12,15 +13,29 @@
     android:background="#ecf0f1">
 
 
+    <Button
+        android:layout_width="162dp"
+        android:layout_height="wrap_content"
+        android:text="SIGN UP"
+        android:width="192dp"
+        android:height="65dp"
+        android:textColor="#FFFFFF"
+        android:onClick="showScreen"
+        android:id="@+id/signUpBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="#1abc9c" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-        <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"/>
-    <LinearLayout
+        android:orientation="vertical"
+        android:layout_alignTop="@+id/signUpBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -39,17 +54,13 @@
     </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:layout_width="162dp"
+    <ImageView
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="SIGN UP"
-        android:width="192dp"
-        android:height="65dp"
-        android:textColor="#FFFFFF"
-        android:onClick="showScreen"
-        android:id="@+id/signUpBtn"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="#1abc9c" />
+        app:srcCompat="@drawable/syntones_logo"
+        android:layout_marginTop="69dp"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

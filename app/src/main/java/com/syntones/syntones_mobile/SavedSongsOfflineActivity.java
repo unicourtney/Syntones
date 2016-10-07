@@ -156,7 +156,9 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
 
         ArrayList<SavedOfflineSongs> savedOfflineSongsArrayList = db.getAllSavedOfflineSongsFromUser(userID);
         DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy");
-        File cacheDir = getCacheDir();
+        File extStore = Environment.getExternalStorageDirectory();
+        Log.d("SD CARD", String.valueOf(extStore));
+        File file = getFilesDir();
         for (SavedOfflineSongs a : savedOfflineSongsArrayList) {
 
             startDate = a.getStartDate();
@@ -169,8 +171,8 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
             if (days>=2) {
 
                 String fileName = URLUtil.guessFileName(a.getFilePath(), null, MimeTypeMap.getFileExtensionFromUrl(a.getFilePath()));
-                File file = new File("/storage/sdcard" + cacheDir, userID + "-" + fileName);
-                file.delete();
+                File mp3File = new File(extStore + "" + file, userID + "-" + fileName);
+                mp3File.delete();
                 db.deleteSavedSongsFromUser(userID, a.getSongId());
                 Log.d("EXPIRED", startDate + " - " + dtExpired.toString(formatter));
             }
