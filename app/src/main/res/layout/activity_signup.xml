@@ -36,9 +36,9 @@
             android:inputType="textEmailAddress"
             android:ems="10"
             android:id="@+id/etEmail"
-            android:text="Email"
             android:backgroundTint="#FFFFFF"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:hint="Email" />
 
         <EditText
             android:layout_width="match_parent"
@@ -46,19 +46,19 @@
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/etPassword"
-            android:text="Password"
             android:backgroundTint="#FFFFFF"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:hint="Password" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="Username"
             android:ems="10"
             android:id="@+id/etUsername"
             android:backgroundTint="#FFFFFF"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:hint="Username" />
 
         <EditText
             android:layout_width="match_parent"
@@ -66,10 +66,9 @@
             android:inputType="date"
             android:ems="10"
             android:id="@+id/etDateOfBirth"
-            android:text="Date of Birth"
             android:backgroundTint="#FFFFFF"
             android:textColor="#FFFFFF"
-            android:hint="MM-DD-YYYY" />
+            android:hint="Birthday (MM-DD-YYYY)" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -127,6 +126,17 @@
             android:layout_marginTop="25dp" />
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log In"
+        android:id="@+id/tvLogin"
+        android:layout_marginTop="39dp"
+        android:textColor="#34495e"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignStart="@+id/textView3" />
 
 
 </RelativeLayout>

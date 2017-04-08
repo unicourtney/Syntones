@@ -53,16 +53,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
-            android:label="Home"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".YourLibraryActivity"
             android:label="Your Library"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -92,7 +82,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ViewPlayListActivity">
+        <activity
+            android:name=".ViewPlayListActivity"
+            android:label="Playlist">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -100,17 +92,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LyricsActivity"
-            android:label="Lyrics"
-            android:theme="@style/AppTheme.CustomTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".GeneratePlaylistMenuActivity"
+            android:name=".GenerateBySongsActivity"
             android:label="Make Me a Playlist"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
             <intent-filter>
@@ -120,25 +102,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GenerateByListActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".GenerateBySongsActivity"
-            android:label="List of Songs"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".PlayerActivity">
+            android:name=".PlayerActivity"
+            android:label="Syntones">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -147,7 +112,7 @@
         </activity>
         <activity
             android:name=".SavedSongsOfflineActivity"
-            android:label="Saved Songs Offline"
+            android:label="Saved Songs"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -155,7 +120,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddSongsActivity">
+        <activity android:name=".AddSongsActivity"
+            android:label="Syntones">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -169,7 +135,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SamplePlayActivity">
+        <activity android:name=".SeeMoreActivity"
+            android:label="Syntones">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.syntones.remote.SyntonesService" />
+
+        <activity android:name=".Page2Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

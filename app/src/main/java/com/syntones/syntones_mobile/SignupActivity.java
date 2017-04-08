@@ -42,7 +42,7 @@ public class SignupActivity extends AppCompatActivity {
     private SignupActivity sContext;
     private EditText EmailEt, UsernameEt, PasswordEt, DateOfBirthEt;
     private RadioGroup GenderRg;
-    private TextView UsernameTv;
+    private TextView UsernameTv, LoginTv;
 
     @BindView(R.id.btnSignUp)
     Button btn_signUp;
@@ -59,6 +59,7 @@ public class SignupActivity extends AppCompatActivity {
         PasswordEt = (EditText) findViewById(R.id.etPassword);
         DateOfBirthEt = (EditText) findViewById(R.id.etDateOfBirth);
         GenderRg = (RadioGroup) findViewById(R.id.rgGender);
+        LoginTv = (TextView) findViewById(R.id.tvLogin);
 
 
         EmailEt.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +90,13 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        LoginTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

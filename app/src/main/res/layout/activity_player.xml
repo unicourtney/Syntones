@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_player"
+    android:id="@+id/rlPlayer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -50,27 +50,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <TextView
-            android:text="Song Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvSongTitle"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="150dp"
-            android:textColor="#000000" />
-
-        <TextView
-            android:text="Artist Name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvArtistName"
-            android:layout_below="@+id/tvSongTitle"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="143dp"
-            android:textColor="#000000" />
-
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,6 +58,16 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="50dp" />
+
+        <TextView
+            android:id="@+id/tvLyrics"
+            android:layout_width="383dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textColor="#34495e" />
 
     </FrameLayout>
 
@@ -127,14 +116,6 @@
             android:id="@+id/btnNext" />
     </TableRow>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/lvBasketRecom" />
-
     <TextView
         android:text="YOU MIGHT LIKE"
         android:layout_width="wrap_content"
@@ -144,9 +125,10 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="230dp"
-        android:id="@+id/textView12"
-        android:textColor="#000000" />
+        android:layout_marginTop="220dp"
+        android:id="@+id/tvYouMightLike"
+        android:textColor="#000000"
+        android:visibility="invisible" />
 
     <Switch
         android:text="Save Offline"
@@ -166,6 +148,37 @@
         android:layout_alignParentStart="true"
         android:id="@+id/ivBack" />
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:id="@+id/lvBasketRecom"
+        android:layout_below="@+id/tvYouMightLike"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="12dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/right_arrow"
+        android:id="@+id/ivSeeMore"
+        android:visibility="invisible"
+        android:layout_alignTop="@+id/tvSeeMore"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="See More"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvSeeMore"
+        android:textColor="#34495e"
+        android:visibility="invisible"
+        android:layout_above="@+id/lvBasketRecom"
+        android:layout_toLeftOf="@+id/ivSeeMore"
+        android:layout_toStartOf="@+id/ivSeeMore"
+        android:paddingTop="3dp" />
+
     <Button
         android:text="+"
         android:layout_width="40dp"
@@ -173,17 +186,26 @@
         android:id="@+id/btnAddToPlaylist"
         android:background="#1abc9c"
         android:textColor="#ecf0f1"
-        android:layout_below="@+id/ivShowLyrics"
+        android:layout_below="@+id/swSaveOffline"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <ImageView
+    <TextView
+        android:text="Song Title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/show_lyrics"
-        android:id="@+id/ivShowLyrics"
-        android:layout_width="70dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/textView12"
-        android:layout_alignEnd="@+id/textView12" />
+        android:id="@+id/tvSongTitle"
+        android:textColor="#000000"
+        android:layout_below="@+id/swSaveOffline"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Artist Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvArtistName"
+        android:textColor="#000000"
+        android:layout_below="@+id/tvSongTitle"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -1,29 +1,37 @@
 package com.syntones.syntones_mobile;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.syntones.model.Playlist;
 import com.syntones.model.PlaylistSong;
 import com.syntones.model.User;
+import com.syntones.remote.ScreenOnOffReceiver;
+import com.syntones.remote.SyntonesTimerTask;
 import com.syntones.remote.SyntonesWebAPI;
 import com.syntones.response.LibraryResponse;
+import com.syntones.response.LogoutResponse;
 import com.syntones.response.PlaylistResponse;
 import com.syntones.response.RemovePlaylistResponse;
 import com.syntones.response.RemoveToPlaylistResponse;
@@ -32,6 +40,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,11 +55,20 @@ public class PlayListActivity extends AppCompatActivity {
     private Button RemoveBtn, EditBtn;
     private String buttonStatus;
     private ImageView BackIv;
+    private SyntonesTimerTask syntonesTimerTask = new SyntonesTimerTask();
+    private RelativeLayout PlaylistRl;
+    private ScreenOnOffReceiver onoffReceiver = new ScreenOnOffReceiver("Playlist");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_list);
+
+        SyntonesTimerTask.getInstance().isPlaying(PlayListActivity.this, "Playlist");
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+
+        registerReceiver(onoffReceiver, filter);
 
         PlaylistsLv = (ListView) findViewById(R.id.lvPlaylists);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, play_lists);
@@ -58,6 +76,7 @@ public class PlayListActivity extends AppCompatActivity {
         RemoveBtn = (Button) findViewById(R.id.btnRemove);
         EditBtn = (Button) findViewById(R.id.btnEdit);
         BackIv = (ImageView) findViewById(R.id.ivBack);
+        PlaylistRl = (RelativeLayout) findViewById(R.id.rlPlaylist);
 
         insertPlaylist();
         displayViewPlaylistList();
@@ -98,10 +117,83 @@ public class PlayListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PlayListActivity.this, YourLibraryActivity.class);
+
                 startActivity(intent);
             }
         });
+
+
+        PlaylistRl.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    Log.e("MOVE", "WOAH");
+
+
+                }
+                return true;
+            }
+        });
+
+        PlaylistsLv.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            private int mLastFirstVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (mLastFirstVisibleItem < firstVisibleItem) {
+                    Log.i("SCROLLING DOWN", "TRUE");
+
+
+                }
+                if (mLastFirstVisibleItem > firstVisibleItem) {
+                    Log.i("SCROLLING UP", "TRUE");
+
+                    SyntonesTimerTask.getInstance().isPlaying(PlayListActivity.this, "Playlist");
+                }
+                mLastFirstVisibleItem = firstVisibleItem;
+            }
+        });
     }
+
+    public class ScreenOnOffReceiver extends BroadcastReceiver {
+
+        private String tag;
+
+
+        public ScreenOnOffReceiver(String tag) {
+            this.tag = tag;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                Log.e("Screen mode", "Screen is in off State");
+
+                SyntonesTimerTask.getInstance().isPlaying(context, tag);
+                //Your logic comes here whatever you want perform when screen is in off state                                                   }
+
+            } else {
+                Log.e("Screen mode", " Screen is in on State");
+
+
+                SyntonesTimerTask.getInstance().isPlaying(context, tag);
+                //Your logic comes here whatever you want perform when screen is in on state
+
+            }
+
+        }
+
+    }
+
+
 
     public void displayPlaylist() {
 
@@ -135,8 +227,8 @@ public class PlayListActivity extends AppCompatActivity {
                         PlaylistResponse playlistResponse = response.body();
                         List<Playlist> playlists = playlistResponse.getPlaylists();
 
-                        for (Playlist a : playlists) {
-
+                        for (final Playlist a : playlists) {
+                            List<PlaylistSong> playlistSongList = new ArrayList<>();
                             if (a.getPlaylistName().equals(playlist_name)) {
 
                                 PlaylistSong playlistSong = new PlaylistSong();
@@ -144,17 +236,43 @@ public class PlayListActivity extends AppCompatActivity {
                                 playlistSong.setPlaylistId(a.getPlaylistId());
                                 playlistSong.setUser(user);
 
-                                syntonesWebAPI.addToPlaylist(playlistSong);
+                                playlistSongList.add(playlistSong);
 
-                                SyntonesWebAPI.Factory.getInstance(sContext).addToPlaylist(playlistSong).enqueue(new Callback<LibraryResponse>() {
+                                SyntonesWebAPI.Factory.getInstance(sContext).checkIfSongExists(playlistSongList).enqueue(new Callback<LibraryResponse>() {
                                     @Override
                                     public void onResponse(Call<LibraryResponse> call, Response<LibraryResponse> response) {
                                         LibraryResponse libraryResponse = response.body();
+                                        List<Long> notExistingSongsList = libraryResponse.getNotExistingSongs();
+                                        if (notExistingSongsList.size() != 0) {
+                                            for (Long b : notExistingSongsList) {
 
-                                        Intent intent = new Intent(PlayListActivity.this, PlayerActivity.class);
+                                                PlaylistSong playlistSong = new PlaylistSong();
+                                                playlistSong.setSongId(b);
+                                                playlistSong.setPlaylistId(a.getPlaylistId());
+                                                playlistSong.setUser(user);
 
-                                        startActivity(intent);
-                                        Log.e("Library Response: ", libraryResponse.getMessage().getMessage());
+                                                SyntonesWebAPI.Factory.getInstance(sContext).addToPlaylist(playlistSong).enqueue(new Callback<LibraryResponse>() {
+                                                    @Override
+                                                    public void onResponse(Call<LibraryResponse> call, Response<LibraryResponse> response) {
+                                                        LibraryResponse libraryResponse = response.body();
+
+                                                        Intent intent = new Intent(PlayListActivity.this, PlayerActivity.class);
+
+                                                        startActivity(intent);
+                                                        Log.e("Library Response: ", libraryResponse.getMessage().getMessage());
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<LibraryResponse> call, Throwable t) {
+
+                                                    }
+                                                });
+                                            }
+                                        }else{
+
+                                            Toast.makeText(PlayListActivity.this, "Song(s) already exist in the playlist .",
+                                                    Toast.LENGTH_LONG).show();
+                                        }
                                     }
 
                                     @Override
@@ -162,6 +280,8 @@ public class PlayListActivity extends AppCompatActivity {
 
                                     }
                                 });
+
+
 
 
                             }
@@ -179,9 +299,36 @@ public class PlayListActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
+    @Override
+    public void onDestroy() {
 
+        SyntonesWebAPI syntonesWebAPI = SyntonesWebAPI.Factory.getInstance(sContext);
+
+        SyntonesWebAPI.Factory.getInstance(sContext).logout().enqueue(new Callback<LogoutResponse>() {
+            @Override
+            public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<LogoutResponse> call, Throwable t) {
+
+            }
+        });
+
+        try {
+            if (onoffReceiver != null)
+                unregisterReceiver(onoffReceiver);
+        } catch (Exception e) {
+
+        }
+        super.onDestroy();
+
+    }
     public void displayViewPlaylistList() {
         PlaylistsLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -211,6 +358,7 @@ public class PlayListActivity extends AppCompatActivity {
                                 editorPlaylistInfo.putString("playlistName", playlist_name);
                                 editorPlaylistInfo.putString("playlistId", String.valueOf(a.getPlaylistId()));
                                 editorPlaylistInfo.apply();
+
                                 startActivity(intent);
                             }
                         }
@@ -293,7 +441,7 @@ public class PlayListActivity extends AppCompatActivity {
             addBtn.setVisibility(View.VISIBLE);
             removeBtn.setVisibility(View.VISIBLE);
         } else if (btnText.equals("Done")) {
-            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, play_lists);
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, play_lists);
             PlaylistsLv.setAdapter(arrayAdapter);
             this.displayViewPlaylistList();
             editBtn.setText("Edit");
@@ -430,6 +578,35 @@ public class PlayListActivity extends AppCompatActivity {
 
 
             arrayAdapter.notifyDataSetChanged();
+
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            NetworkInfo mobileInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+            if ((wifiInfo != null && wifiInfo.isConnected()) || (mobileInfo != null && mobileInfo.isConnected())) {
+                Log.d("CONNECTION YL", "TRUE");
+                Log.d("CONNECTION YL", "WIFI " + wifiInfo.isConnected());
+                Log.d("CONNECTION YL", "MOBILE " + mobileInfo.isConnected());
+                SyntonesTimerTask.getInstance().isPlaying(PlayListActivity.this, "Playlist");
+
+            } else {
+                Log.d("CONNECTION YL", "FALSE");
+                Log.d("CONNECTION YL", "WIFI " + wifiInfo.isConnected());
+                Log.d("CONNECTION YL", "MOBILE " + mobileInfo.isConnected());
+                SyntonesTimerTask.getInstance().stopCounter();
+                SyntonesTimerTask.getInstance().stopPlayerCounter();
+                Intent intent = new Intent(PlayListActivity.this, YourLibraryActivity.class);
+                startActivity(intent);
+            }
+
+        } catch (Exception e) {
 
         }
     }

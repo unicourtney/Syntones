@@ -27,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LYRICS = "lyrics";
     private static final String USER_ID = "user_id";
     private static final String START_DATE = "start_date";
+    private static  final String GENRE = "genre";
 
     public DBHelper(Context context) {
         super(context, DATABASE, null, 1);
@@ -35,7 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("create table if not exists " + TABLE + " (id integer primary key," + USER_ID + " text," + SONG_ID + " long," + ARTIST_NAME + " text," + SONG_TITLE + " text," + FILE_PATH + " text," + LYRICS + " text," + START_DATE + " text" + ")");
+        db.execSQL("create table if not exists " + TABLE + " (id integer primary key," + USER_ID + " text," + SONG_ID + " long," + ARTIST_NAME + " text," + SONG_TITLE + " text," + FILE_PATH + " text," + LYRICS + " text," + START_DATE + " text," + GENRE + " text" + ")");
     }
 
     @Override
@@ -54,6 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
             contentValues.put(FILE_PATH, savedOfflineSongs.getFilePath());
             contentValues.put(LYRICS, savedOfflineSongs.getLyrics());
             contentValues.put(START_DATE, savedOfflineSongs.getStartDate().toString());
+            contentValues.put(GENRE, savedOfflineSongs.getGenre());
 
             db.insert(TABLE, null, contentValues);
 
@@ -80,6 +82,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 savedOfflineSongs.setFilePath(cursor.getString(cursor.getColumnIndex(FILE_PATH)));
                 savedOfflineSongs.setLyrics(cursor.getString(cursor.getColumnIndex(LYRICS)));
                 savedOfflineSongs.setStartDate(cursor.getString(cursor.getColumnIndex(START_DATE)));
+                savedOfflineSongs.setGenre(cursor.getString(cursor.getColumnIndex(GENRE)));
                 savedOfflineSongsArrayList.add(savedOfflineSongs);
                 cursor.moveToNext();
             }

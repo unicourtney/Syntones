@@ -26,4 +26,15 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/ivBackToLib" />
+
+    <TextView
+        android:text="You have no songs saved here . . ."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEmptySavedSongs"
+        android:layout_below="@+id/ivBackToLib"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:textColor="#c0392b"
+        android:visibility="invisible" />
 </RelativeLayout>

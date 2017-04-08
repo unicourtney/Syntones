@@ -14,8 +14,20 @@
         android:text="Delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="195dp"
-        android:id="@+id/btnDelete" />
+        android:id="@+id/btnDelete"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Page 2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnDelete"
+        android:layout_alignLeft="@+id/btnDelete"
+        android:layout_alignStart="@+id/btnDelete"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="33dp"
+        android:id="@+id/btnPage2" />
+
+
 </RelativeLayout>

@@ -5,6 +5,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.format.Formatter;
 
+import com.syntones.syntones_mobile.MainActivity;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -18,8 +20,9 @@ import static android.content.Context.WIFI_SERVICE;
 
 public class IpAddressSetting {
 
-    String iPAddress = "192.168.1.5";
+  /*  MainActivity mainActivity = new MainActivity();*/
 
+    String iPAddress = "192.168.1.5";
     public IpAddressSetting() {
     }
 

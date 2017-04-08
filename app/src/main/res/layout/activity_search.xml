@@ -9,19 +9,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".SearchActivity">
+    tools:context=".SearchActivity"
+    android:id="@+id/rlSearchResult">
 
-
-    <EditText
-        android:layout_width="259dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/etSearch"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textColor="#000000"
-        android:layout_toLeftOf="@+id/btnSearchRes"
-        android:layout_toStartOf="@+id/btnSearchRes" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -49,17 +39,46 @@
         android:onClick="searchBtn"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="27dp" />
+
+    <EditText
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etSearch"
+        android:textColor="#000000"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="25dp"
+        android:hint="Search" />
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="360dp"
+        android:layout_height="280dp"
         android:id="@+id/lvSearchResult"
         android:background="#ecf0f1"
         android:headerDividersEnabled="false"
         android:choiceMode="singleChoice"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/btnSearchRes"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/ivLibrary"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:text="Searching . . ."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etSearch"
+        android:layout_alignRight="@+id/etSearch"
+        android:layout_alignEnd="@+id/etSearch"
+        android:layout_marginRight="70dp"
+        android:layout_marginEnd="70dp"
+        android:textSize="20sp"
+        android:layout_marginTop="50dp"
+        android:id="@+id/tvSearching"
+        android:textColor="#c0392b"
+        android:visibility="invisible" />
 
 </RelativeLayout>

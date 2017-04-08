@@ -6,22 +6,28 @@ package com.syntones.remote;
 
 import android.content.Context;
 
+import com.syntones.model.PlayedSongs;
+import com.syntones.model.PlayedSongsByTime;
 import com.syntones.model.Playlist;
 import com.syntones.model.PlaylistSong;
 import com.syntones.model.Tag;
 import com.syntones.model.User;
 import com.syntones.response.ArtistResponse;
 import com.syntones.response.GeneratePlaylistResponse;
+import com.syntones.response.GenreResponse;
 import com.syntones.response.LibraryResponse;
 import com.syntones.response.ListenResponse;
 import com.syntones.response.LoginResponse;
 import com.syntones.response.LogoutResponse;
+import com.syntones.response.PlayedSongsResponse;
+import com.syntones.response.PlayedSongsByTimeResponse;
 import com.syntones.response.PlaylistResponse;
 import com.syntones.response.PlaylistSongsResponse;
 import com.syntones.response.RemovePlaylistResponse;
 import com.syntones.response.SearchResponse;
 import com.syntones.response.SongListResponse;
 import com.syntones.model.TemporaryDB;
+import com.syntones.response.SongLyricsResponse;
 import com.syntones.response.TagsResponse;
 import com.syntones.response.ThreeItemSetResponse;
 import com.syntones.response.TwoItemSetResponse;
@@ -42,7 +48,7 @@ public interface SyntonesWebAPI {
     IpAddressSetting iPAddresSetting = new IpAddressSetting();
 
 
-    String ENDPOINT = "http://" + iPAddresSetting.getiPAddress() + ":8082/syntones-web/";
+    String ENDPOINT = "http://" + iPAddresSetting.getiPAddress() + ":8084/syntones-web/";
 
     @POST("register")
     Call<User> createUser(@Body User user);
@@ -78,32 +84,37 @@ public interface SyntonesWebAPI {
     Call<ListenResponse> listenPlaylist(@Body Playlist playlist);
 
     @POST("getTwoItemSet")
-    Call<TwoItemSetResponse> getTwoItemSet();
+    Call<TwoItemSetResponse> getTwoItemSet(@Body String songId);
 
     @POST("getThreeItemSet")
-    Call<ThreeItemSetResponse> getThreeItemSet();
+    Call<ThreeItemSetResponse> getThreeItemSet(@Body String songId);
 
     @POST("logoutProcess")
     Call<LogoutResponse> logout();
 
-    @POST("getAllArtists")
-    Call<ArtistResponse> getAllArtists();
-
-    @GET("getAllTags")
-    Call<TagsResponse> getAllTags();
-
-    @POST("generatePlaylistByArtist")
-    Call<GeneratePlaylistResponse> generatePlaylistByArtist(@Body String artistName);
-
-    @POST("generatePlaylistByTags")
-    Call<GeneratePlaylistResponse> generatePlaylistByTags(@Body Tag tag);
-
     @POST("saveGeneratedPlaylist")
     Call<GeneratePlaylistResponse> saveGeneratedPlaylist(@Body Playlist playlist);
+
+    @POST("getPlayedSongs")
+    Call<PlayedSongsResponse> getPlayedSongs();
 
     @POST("search")
     Call<SearchResponse> search(@Body String search);
 
+    @POST("getPlayedSongsByTime")
+    Call<PlayedSongsByTimeResponse> getPlayedSongsByTime();
+
+    @POST("generatePlaylist")
+    Call<GeneratePlaylistResponse> generatePlaylist(@Body User user);
+
+    @POST("getLyrics")
+    Call<SongLyricsResponse> getSongLyrics(@Body long songId);
+
+    @POST("getGenre")
+    Call<GenreResponse> getGenre(@Body String something);
+
+    @POST("checkIfSongExists")
+    Call<LibraryResponse> checkIfSongExists(@Body List<PlaylistSong> playlistSong);
 
     class Factory {
 

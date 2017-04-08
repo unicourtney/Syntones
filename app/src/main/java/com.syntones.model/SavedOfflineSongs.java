@@ -7,12 +7,12 @@ import java.util.Date;
  */
 
 public class SavedOfflineSongs {
-    private String artistName, songTitle, filePath, lyrics, songId, userName, startDate;
+    private String artistName, songTitle, filePath, lyrics, songId, userName, startDate, genre;
 
     public SavedOfflineSongs() {
     }
 
-    public SavedOfflineSongs(String artistName, String songTitle, String filePath, String lyrics, String songId, String userName, String startDate) {
+    public SavedOfflineSongs(String artistName, String songTitle, String filePath, String lyrics, String songId, String userName, String startDate, String genre) {
         this.artistName = artistName;
         this.songTitle = songTitle;
         this.filePath = filePath;
@@ -20,6 +20,7 @@ public class SavedOfflineSongs {
         this.songId = songId;
         this.userName = userName;
         this.startDate = startDate;
+        this.genre = genre;
     }
 
     public String getArtistName() {
@@ -76,5 +77,13 @@ public class SavedOfflineSongs {
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 }

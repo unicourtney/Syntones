@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.syntones.model.Playlist;
 import com.syntones.model.User;
+import com.syntones.remote.SyntonesTimerTask;
 import com.syntones.remote.SyntonesWebAPI;
 import com.syntones.response.LoginResponse;
 
@@ -21,6 +22,8 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;
     private Button btn_signUp;
     private TextView LoginMessageTv, SignUpTv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,15 +94,25 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 LoginResponse loginResponse = response.body();
-                User user = loginResponse.getUser();
 
 
                 SharedPreferences sharedPrefUserInfo = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editorUserInfo = sharedPrefUserInfo.edit();
 
-                if(loginResponse.getMessage().getFlag()==true){
+                if (loginResponse.getMessage().getFlag() == true) {
+                    User user = loginResponse.getUser();
                     editorUserInfo.putString("username", username);
                     editorUserInfo.putLong("userID", user.getUserId());
+
+
+                    String uniqueId = null;
+                    if (uniqueId == null) {
+                        uniqueId = UUID.randomUUID().toString();
+
+                        Log.d("UUID", uniqueId);
+                        editorUserInfo.putString("userUUID", uniqueId);
+                    }
+
                     Log.d("USER ID", String.valueOf(user.getUserId()));
                     editorUserInfo.apply();
 
@@ -106,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(LoginActivity.this, YourLibraryActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     LoginMessageTv.setVisibility(View.VISIBLE);
                 }
 
@@ -122,5 +136,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
 
 }

@@ -16,14 +16,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.syntones.model.SavedOfflineSongs;
 import com.syntones.remote.DBHelper;
+import com.syntones.remote.SyntonesTimerTask;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -32,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
 
 public class SavedSongsOfflineActivity extends AppCompatActivity {
 
@@ -40,6 +44,7 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
     private ArrayAdapter<String> arrayAdapter;
     private String userID;
     private ImageView BackToLibIv;
+    private TextView EmptySavedSongsTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
 
         SavedSongsOfflineLv = (ListView) findViewById(R.id.lvSavedSongsOffline);
         BackToLibIv = (ImageView) findViewById(R.id.ivBackToLib);
+        EmptySavedSongsTv = (TextView) findViewById(R.id.tvEmptySavedSongs);
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, saved_offline_songs_list);
         SavedSongsOfflineLv.setAdapter(arrayAdapter);
@@ -77,8 +83,12 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
 
         DBHelper db = new DBHelper(this);
 
+
         ArrayList<SavedOfflineSongs> savedOfflineSongsArrayList = db.getAllSavedOfflineSongsFromUser(userID);
 
+        if (savedOfflineSongsArrayList.size() == 0) {
+            EmptySavedSongsTv.setVisibility(View.VISIBLE);
+        }
         Log.d("SQL size", String.valueOf(savedOfflineSongsArrayList.size()));
 
         final SharedPreferences sharedPrefPlayedSongInfo = getSharedPreferences("playedSongInfo", 0);
@@ -89,7 +99,7 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
         String[] song_titles = new String[savedOfflineSongsArrayList.size()];
         String[] song_artists = new String[savedOfflineSongsArrayList.size()];
         String[] song_lyrics = new String[savedOfflineSongsArrayList.size()];
-
+        String[] song_genre = new String[savedOfflineSongsArrayList.size()];
         editorPlayedSongInfo.putInt("song_url_array" + "_size", song_urls.length);
 
         int b = 0;
@@ -107,8 +117,8 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
             editorPlayedSongInfo.putString("song_titles_array" + "_" + b, song_titles[b]);
             editorPlayedSongInfo.putString("song_artists_array" + "_" + b, song_artists[b]);
             editorPlayedSongInfo.putString("song_lyrics_array" + "_" + b, song_lyrics[b]);
-
-            arrayAdapter.add(a.getSongTitle() + " by " + a.getArtistName());
+            editorPlayedSongInfo.putString("song_genre_array" + "_" + b, song_genre[b]);
+            arrayAdapter.add(a.getSongTitle() + "\nby " + a.getArtistName() + "\n| " + a.getGenre());
             arrayAdapter.notifyDataSetChanged();
 
             b++;
@@ -128,9 +138,9 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
                 SharedPreferences.Editor editorSongInfo = sharedPrefSongInfo.edit();
 
                 String[] song_info = song.split("\\s(by)\\s");
-
-                editorSongInfo.putString("songTitle", song_info[0]);
-                editorSongInfo.putString("artistName", song_info[1]);
+                String[] splitText2 = song_info[1].split("\\|");
+                editorSongInfo.putString("songTitle", song_info[0].trim());
+                editorSongInfo.putString("artistName", splitText2[0].trim());
 
                 editorSongInfo.apply();
 
@@ -146,41 +156,44 @@ public class SavedSongsOfflineActivity extends AppCompatActivity {
     }
 
 
-
-
     public void deleteFiles() throws ParseException {
         Calendar calendar = Calendar.getInstance();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         String currentDate = dateFormat.format(calendar.getTime()), startDate;
         DBHelper db = new DBHelper(this);
 
+        SharedPreferences sharedPrefUserInfo = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        userID = String.valueOf(sharedPrefUserInfo.getLong("userID", 0));
+
         ArrayList<SavedOfflineSongs> savedOfflineSongsArrayList = db.getAllSavedOfflineSongsFromUser(userID);
         DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy");
-        File extStore = Environment.getExternalStorageDirectory();
-        Log.d("SD CARD", String.valueOf(extStore));
-        File file = getFilesDir();
-        for (SavedOfflineSongs a : savedOfflineSongsArrayList) {
+        if (savedOfflineSongsArrayList != null) {
+            for (SavedOfflineSongs a : savedOfflineSongsArrayList) {
 
-            startDate = a.getStartDate();
-            DateTime dtStart = formatter.parseDateTime(startDate);
-            DateTime dtOrgStart = new DateTime(dtStart);
-            DateTime dtExpired = dtOrgStart.plusDays(2);
-            DateTime dtCurrent = formatter.parseDateTime(currentDate);
+                startDate = a.getStartDate();
+                DateTime dtStart = formatter.parseDateTime(startDate);
+                DateTime dtOrgStart = new DateTime(dtStart);
+                DateTime dtExpired = dtOrgStart.plusDays(5);
+                DateTime dtCurrent = formatter.parseDateTime(currentDate);
 
-            int days = Days.daysBetween(dtStart, dtCurrent).getDays();
-            if (days>=2) {
+                int days = Days.daysBetween(dtStart, dtCurrent).getDays();
+                if (days >= 2) {
 
-                String fileName = URLUtil.guessFileName(a.getFilePath(), null, MimeTypeMap.getFileExtensionFromUrl(a.getFilePath()));
-                File mp3File = new File(extStore + "" + file, userID + "-" + fileName);
-                mp3File.delete();
-                db.deleteSavedSongsFromUser(userID, a.getSongId());
-                Log.d("EXPIRED", startDate + " - " + dtExpired.toString(formatter));
+                    String fileName = URLUtil.guessFileName(a.getFilePath(), null, MimeTypeMap.getFileExtensionFromUrl(a.getFilePath()));
+                    File extStore = Environment.getExternalStorageDirectory();
+                    File mp3File = new File(extStore + getFilesDir().getPath() + "/Syntones/savedSongs/", userID + "-" + fileName);
+                    mp3File.delete();
+                    db.deleteSavedSongsFromUser(userID, a.getSongId());
+
+                    Log.d("EXPIRED", startDate + " - " + dtExpired.toString(formatter));
+                }
+
+
+                Log.d("DATE EXPIRATION", startDate + " - " + dtExpired.toString(formatter));
             }
-
-
-            Log.d("DATE EXPIRATION", startDate + " - " + dtExpired.toString(formatter));
         }
-
     }
+
 
 }

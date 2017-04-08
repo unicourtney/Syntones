@@ -7,11 +7,9 @@ import java.io.File;
  */
 public class Song {
 
-    private long songId;
+    private long songId,  genreId;
 
-    private String songTitle;
-
-    private String artistName;
+    private String songTitle, artistName, mood;
 
     private int distance;
 
@@ -28,6 +26,7 @@ public class Song {
     public Song() {
     }
 
+
     public void setFile(File file) {
         this.file = file;
     }
@@ -35,6 +34,8 @@ public class Song {
     public void setArtist(Artist artist) {
         this.artist = artist;
     }
+
+
 
     public Song(String songTitle, String artistName) {
         this.artistName = artistName;
@@ -97,4 +98,19 @@ public class Song {
         this.songId = songId;
     }
 
+    public String getMood() {
+        return mood;
+    }
+
+    public void setMood(String mood) {
+        this.mood = mood;
+    }
+
+    public long getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(long genreId) {
+        this.genreId = genreId;
+    }
 }

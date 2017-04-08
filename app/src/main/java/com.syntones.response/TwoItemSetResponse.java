@@ -1,6 +1,7 @@
 package com.syntones.response;
 
 import com.syntones.model.Message;
+import com.syntones.model.Song;
 import com.syntones.model.TwoItemSet;
 
 import java.util.List;
@@ -9,16 +10,16 @@ import java.util.List;
 public class TwoItemSetResponse {
 
     private Message message;
-    private List<TwoItemSet> two_item_set_list;
+    private List<Song> songList;
+
 
     public TwoItemSetResponse() {
         super();
     }
 
-    public TwoItemSetResponse(Message message, List<TwoItemSet> two_item_set_list) {
-        super();
+    public TwoItemSetResponse(Message message, List<Song> songList) {
         this.message = message;
-        this.two_item_set_list = two_item_set_list;
+        this.songList = songList;
     }
 
     public Message getMessage() {
@@ -29,12 +30,11 @@ public class TwoItemSetResponse {
         this.message = message;
     }
 
-    public List<TwoItemSet> getTwo_item_set_list() {
-        return two_item_set_list;
+    public List<Song> getSongList() {
+        return songList;
     }
 
-    public void setTwo_item_set_list(List<TwoItemSet> two_item_set_list) {
-        this.two_item_set_list = two_item_set_list;
+    public void setSongList(List<Song> songList) {
+        this.songList = songList;
     }
-
 }
